@@ -1,11 +1,11 @@
 language: EN
-strict: false
+strict: true
 output:
-  file_path: results.sarif
-  format: SARIF
+  file_path: results-sast.csv
+  format: CSV
 sast:
   include:
     - .
-  exclude: # Optional: paths to exclude from scanning
+  exclude:
     - node_modules
     - vendor

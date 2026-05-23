@@ -15,6 +15,26 @@ jobs:
         with:
           scan_config_path: .github/sca-config.yaml
 
+      - name: Upload CSV artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: results-sca.csv
+          path: '**/results-sca.csv'
+
+      - name: Break build if vulnerabilities exist
+        if: always()
+        run: |
+          if [ ! -f results-sca.csv ]; then
+            echo "No output file found"
+            exit 0
+          fi
+          FINDINGS=$(grep -v "^title," results-sca.csv | grep -v "^Summary:" | wc -l)
+          echo "Vulnerabilities found: $FINDINGS"
+          if [ "$FINDINGS" -gt 0 ]; then
+            exit 1
+          fi
+
       # Optional: upload findings to the GitHub Security tab
       #- name: Upload SARIF
       #  if: always()
