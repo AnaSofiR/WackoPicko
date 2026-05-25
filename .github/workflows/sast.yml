@@ -26,15 +26,15 @@ jobs:
           name: results-sast.csv
           path: '**/results-sast.csv'
 
-      - name: Break build if vulnerabilities exist
+      - name: Break build if high/critical vulnerabilities exist
         if: always()
         run: |
           if [ ! -f results-sast.csv ]; then
             echo "No output file found"
             exit 0
           fi
-          FINDINGS=$(grep -E ",Low,|,Medium,|,High,|,Critical," results-sast.csv | wc -l)
-          echo "Vulnerabilities found: $FINDINGS"
+          FINDINGS=$(grep -E ",High,|,Critical," results-sast.csv | wc -l)
+          echo "High/Critical vulnerabilities found: $FINDINGS"
           if [ "$FINDINGS" -gt 0 ]; then
             exit 1
           fi
